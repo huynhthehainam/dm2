@@ -15,9 +15,6 @@ const injector = inject(({ store }) => {
   const { sidebarEnabled, sidebarVisible } = store.viewsStore ?? {};
   const currentView = store.currentView;
 
-  console.log("Current view: ", currentView);
-  console.log("Store: ", store);
-  console.log("Set mode: ", currentView.setMode);
   return {
     shrinkWidth: sidebarEnabled && sidebarVisible,
     view: currentView,
@@ -107,19 +104,19 @@ const TabsSwitch = switchInjector(
 
 import { RadioGroup } from "../Common/RadioGroup/RadioGroup";
 
-const DataModeToggle = injector(({ view, size, ...rest }) => {
-  console.log("Toggle view: ", view);
+const DataModeToggle = injector(({ view, size }) => {
+  console.log("View mode", view.mode);
   return (
     <RadioGroup
       value={view.mode}
       size={size}
-      onChange={(e) => view.setMode(e.mode.value)}
-      {...rest}
+      onChange={(e) => {
+        console.log(e.target.value);
+        view.setMode(e.target.value);
+      }}
     >
       <RadioGroup.Button value="data">Data</RadioGroup.Button>
-      <RadioGroup.Button value="ml" disabled>
-        Machine Learning
-      </RadioGroup.Button>
+      <RadioGroup.Button value="ml"> Machine Learning </RadioGroup.Button>
     </RadioGroup>
   );
 });
@@ -127,14 +124,11 @@ const DataModeToggle = injector(({ view, size, ...rest }) => {
 export const DataManager = injector(({ shrinkWidth }) => {
   return (
     <Block name="tabs-content">
-      
-
       <Elem name="tab" mod={{ shrink: shrinkWidth }}>
-
         <Interface name="tabs">
           <TabsSwitch />
         </Interface>
-        <DataModeToggle size="250"/>
+        <DataModeToggle size="150" />
 
         <Interface name="toolbar">
           <Toolbar />

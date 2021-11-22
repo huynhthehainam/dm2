@@ -243,12 +243,19 @@ export const Tab = types
     },
 
     setMode(mode) {
+      console.log("Before", self.saved);
+
       self.mode = mode;
+      console.log("After", self.saved);
+
       self.save();
     },
 
     setType(type) {
+      console.log("Before", self.saved);
       self.type = type;
+      console.log("After", self.saved);
+
       self.save();
     },
 
@@ -388,6 +395,14 @@ export const Tab = types
 
     save: flow(function* ({ reload, interaction } = {}) {
       const serialized = self.serialize();
+
+      console.log("Saving");
+      console.log("Saved", self.saved);
+      console.log("Snapshot",self.snapshot);
+      console.log("Serialize",serialized);
+      console.log("Equal",deepEqual(self.snapshot, serialized));
+
+
 
       if (!self.saved || !deepEqual(self.snapshot, serialized)) {
         self.snapshot = serialized;
