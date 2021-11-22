@@ -9,11 +9,11 @@ import {
   types
 } from "mobx-state-tree";
 import { guidGenerator } from "../../utils/random";
-import { normalizeFilterValue } from './filter_utils';
+import { normalizeFilterValue } from "./filter_utils";
 import { TabFilter } from "./tab_filter";
 import { TabHiddenColumns } from "./tab_hidden_columns";
 import { TabSelectedItems } from "./tab_selected_items";
-import { History } from '../../utils/history';
+import { History } from "../../utils/history";
 
 export const Tab = types
   .model("View", {
@@ -25,6 +25,8 @@ export const Tab = types
     key: types.optional(types.string, guidGenerator),
 
     type: types.optional(types.enumeration(["list", "grid"]), "list"),
+
+    mode: types.optional(types.enumeration(["data", "ml"]), "data"),
 
     target: types.optional(
       types.enumeration(["tasks", "annotations"]),
@@ -240,6 +242,11 @@ export const Tab = types
       self.locked = false;
     },
 
+    setMode(mode) {
+      self.mode = mode;
+      self.save();
+    },
+
     setType(type) {
       self.type = type;
       self.save();
@@ -322,7 +329,7 @@ export const Tab = types
           return columnID === filter.field.id;
         });
 
-        filters.forEach(f => {
+        filters.forEach((f) => {
           if (f.type !== type) f.delete();
         });
 

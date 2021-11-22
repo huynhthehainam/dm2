@@ -13,9 +13,14 @@ import { Toolbar } from "./Toolbar/Toolbar";
 
 const injector = inject(({ store }) => {
   const { sidebarEnabled, sidebarVisible } = store.viewsStore ?? {};
+  const currentView = store.currentView;
 
+  console.log("Current view: ", currentView);
+  console.log("Store: ", store);
+  console.log("Set mode: ", currentView.setMode);
   return {
     shrinkWidth: sidebarEnabled && sidebarVisible,
+    view: currentView,
   };
 });
 
@@ -41,7 +46,10 @@ const switchInjector = inject(({ store }) => {
 
 const ProjectSummary = summaryInjector((props) => {
   return (
-    <Space size="large" style={{ paddingRight: "1em", color: "rgba(0,0,0,0.3)" }}>
+    <Space
+      size="large"
+      style={{ paddingRight: "1em", color: "rgba(0,0,0,0.3)" }}
+    >
       {props.cloudSync && (
         <Space
           size="small"
@@ -64,44 +72,69 @@ const ProjectSummary = summaryInjector((props) => {
   );
 });
 
-const TabsSwitch = switchInjector(observer(({ views, tabs, selectedKey }) => {
+const TabsSwitch = switchInjector(
+  observer(({ views, tabs, selectedKey }) => {
+    return (
+      <Tabs
+        activeTab={selectedKey}
+        onAdd={() => views.addView({ reload: false })}
+        onChange={(key) => views.setSelected(key)}
+        tabBarExtraContent={<ProjectSummary />}
+        addIcon={<LSPlus />}
+      >
+        {tabs.map((tab) => (
+          <TabsItem
+            key={tab.key}
+            tab={tab.key}
+            title={tab.title}
+            onFinishEditing={(title) => {
+              tab.setTitle(title);
+              tab.save();
+            }}
+            onDuplicate={() => tab.parent.duplicateView(tab)}
+            onClose={() => tab.parent.deleteView(tab)}
+            onSave={() => tab.virtual && tab.saveVirtual()}
+            active={tab.key === selectedKey}
+            editable={tab.editable}
+            deletable={tab.deletable}
+            virtual={tab.virtual}
+          />
+        ))}
+      </Tabs>
+    );
+  }),
+);
+
+import { RadioGroup } from "../Common/RadioGroup/RadioGroup";
+
+const DataModeToggle = injector(({ view, size, ...rest }) => {
+  console.log("Toggle view: ", view);
   return (
-    <Tabs
-      activeTab={selectedKey}
-      onAdd={() => views.addView({ reload: false })}
-      onChange={(key) => views.setSelected(key)}
-      tabBarExtraContent={<ProjectSummary />}
-      addIcon={<LSPlus />}
+    <RadioGroup
+      value={view.mode}
+      size={size}
+      onChange={(e) => view.setMode(e.mode.value)}
+      {...rest}
     >
-      {tabs.map((tab) => (
-        <TabsItem
-          key={tab.key}
-          tab={tab.key}
-          title={tab.title}
-          onFinishEditing={(title) => {
-            tab.setTitle(title);
-            tab.save();
-          }}
-          onDuplicate={() => tab.parent.duplicateView(tab)}
-          onClose={() => tab.parent.deleteView(tab)}
-          onSave={()=> tab.virtual && tab.saveVirtual()}
-          active={tab.key === selectedKey}
-          editable={tab.editable}
-          deletable={tab.deletable}
-          virtual={tab.virtual}
-        />
-      ))}
-    </Tabs>
+      <RadioGroup.Button value="data">Data</RadioGroup.Button>
+      <RadioGroup.Button value="ml" disabled>
+        Machine Learning
+      </RadioGroup.Button>
+    </RadioGroup>
   );
-}));
+});
 
 export const DataManager = injector(({ shrinkWidth }) => {
   return (
     <Block name="tabs-content">
+      
+
       <Elem name="tab" mod={{ shrink: shrinkWidth }}>
+
         <Interface name="tabs">
           <TabsSwitch />
         </Interface>
+        <DataModeToggle size="250"/>
 
         <Interface name="toolbar">
           <Toolbar />
