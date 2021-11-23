@@ -104,22 +104,22 @@ const TabsSwitch = switchInjector(
 
 import { RadioGroup } from "../Common/RadioGroup/RadioGroup";
 
-const DataModeToggle = injector(({ view, size }) => {
-  console.log("View mode", view.mode);
-  return (
-    <RadioGroup
-      value={view.mode}
-      size={size}
-      onChange={(e) => {
-        console.log("On change", e.target.value);
-        view.setMode(e.target.value);
-      }}
-    >
-      <RadioGroup.Button value="data">Data</RadioGroup.Button>
-      <RadioGroup.Button value="ml"> Machine Learning </RadioGroup.Button>
-    </RadioGroup>
-  );
-});
+const DataModeToggle = injector(
+  observer(({ view, size }) => {
+    return (
+      <RadioGroup
+        value={view.mode}
+        size={size}
+        onChange={(e) => {
+          view.setMode(e.target.value);
+        }}
+      >
+        <RadioGroup.Button value="data">Data</RadioGroup.Button>
+        <RadioGroup.Button value="ml"> Machine Learning </RadioGroup.Button>
+      </RadioGroup>
+    );
+  }),
+);
 
 export const DataManager = injector(({ shrinkWidth }) => {
   return (
