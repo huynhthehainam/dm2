@@ -111,7 +111,7 @@ const DataModeToggle = injector(({ view, size }) => {
       value={view.mode}
       size={size}
       onChange={(e) => {
-        console.log(e.target.value);
+        console.log("On change", e.target.value);
         view.setMode(e.target.value);
       }}
     >

@@ -209,6 +209,7 @@ export const Tab = types
         ordering: self.ordering.toJSON(),
         type: self.type,
         target: self.target,
+        mode: self.mode,
         filters: self.filterSnposhot,
         hiddenColumns: getSnapshot(self.hiddenColumns),
         columnsWidth: self.columnsWidth.toPOJO(),
