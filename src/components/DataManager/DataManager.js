@@ -1,5 +1,5 @@
 import { inject, observer } from "mobx-react";
-import React from "react";
+import React, { useCallback } from "react";
 import { LSPlus } from "../../assets/icons";
 import { Block, Elem } from "../../utils/bem";
 import { Interface } from "../Common/Interface";
@@ -10,6 +10,7 @@ import { FiltersSidebar } from "../Filters/FiltersSidebar/FilterSidebar";
 import { DataView } from "../Table/Table";
 import "./DataManager.styl";
 import { Toolbar } from "./Toolbar/Toolbar";
+import { MachineLearningSettings } from "../ML/Manager/MachineLearningSettings";
 
 const injector = inject(({ store }) => {
   const { sidebarEnabled, sidebarVisible } = store.viewsStore ?? {};
@@ -18,6 +19,7 @@ const injector = inject(({ store }) => {
   return {
     shrinkWidth: sidebarEnabled && sidebarVisible,
     view: currentView,
+    viewMode: currentView?.mode,
   };
 });
 
@@ -121,7 +123,16 @@ const DataModeToggle = injector(
   }),
 );
 
-export const DataManager = injector(({ shrinkWidth }) => {
+export const DataManager = injector(({ viewMode, shrinkWidth }) => {
+  // console.log(Toolbar);
+  // const content = viewMode === "data" ? <DataView /> : <MLManager />;
+  // const renderContent = useCallback(
+  //   (content) => {
+  //     return content;
+  //   },
+  //   [viewMode],
+  // );
+  console.log(useCallback);
   return (
     <Block name="tabs-content">
       <Elem name="tab" mod={{ shrink: shrinkWidth }}>
@@ -129,12 +140,13 @@ export const DataManager = injector(({ shrinkWidth }) => {
           <TabsSwitch />
         </Interface>
         <DataModeToggle size="150" />
+        {viewMode === "data" ? (
+          <Interface name="toolbar">
+            <Toolbar />
+          </Interface>
+        ) : null}
 
-        <Interface name="toolbar">
-          <Toolbar />
-        </Interface>
-
-        <DataView />
+        {viewMode === "data" ? <DataView /> : <MachineLearningSettings />}
       </Elem>
       <FiltersSidebar />
     </Block>
