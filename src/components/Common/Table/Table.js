@@ -1,5 +1,13 @@
 import { observer } from "mobx-react";
-import React, { createContext, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  createContext,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { FaCode } from "react-icons/fa";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { VariableSizeList } from "react-window";
@@ -124,10 +132,12 @@ export const Table = observer(
                 modal({
                   title: "Source for task " + out?.id,
                   style: { width: 800 },
-                  body: <TaskSourceView content={out} onTaskLoad={onTaskLoad} />,
+                  body: (
+                    <TaskSourceView content={out} onTaskLoad={onTaskLoad} />
+                  ),
                 });
               }}
-              icon={<Icon icon={FaCode}/>}
+              icon={<Icon icon={FaCode} />}
             />
           </Tooltip>
         );
@@ -238,7 +248,7 @@ export const Table = observer(
       if (index >= 0) {
         const scrollOffset = index * h - height / 2 + h / 2; // + headerHeight
 
-        return cachedScrollOffset.current = scrollOffset;
+        return (cachedScrollOffset.current = scrollOffset);
       } else {
         return 0;
       }
@@ -246,7 +256,7 @@ export const Table = observer(
 
     const itemKey = useCallback(
       (index) => {
-        if (index > (data.length - 1)) {
+        if (index > data.length - 1) {
           return index;
         }
         return data[index]?.key ?? index;
@@ -407,7 +417,5 @@ const TaskSourceView = ({ content, onTaskLoad }) => {
     });
   }, []);
 
-  return (
-    <pre>{source ? JSON.stringify(source, null, "  ") : null}</pre>
-  );
+  return <pre>{source ? JSON.stringify(source, null, "  ") : null}</pre>;
 };

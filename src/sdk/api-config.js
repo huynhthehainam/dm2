@@ -7,6 +7,43 @@ export const APIConfig = {
     /** Project base info */
     project: "/project",
 
+    updateProject: {
+      path: "/../projects/:project",
+      method: "patch",
+    },
+    fetchProject: {
+      path: "/../projects/:project",
+      method: "get",
+    },
+    fetchMLVersions: {
+      path: "/../projects/:project/model-versions",
+      method: "get",
+    },
+
+    fetchBackends: {
+      path: "/../ml",
+      method: "get",
+    },
+
+    addMLBackend: {
+      path: "/../ml",
+      method: "post",
+    },
+
+    updateMLBackend: {
+      path: "/../ml/:backendID",
+      method: "patch",
+    },
+    deleteBackend: {
+      path: "/../ml/:backendID",
+      method: "delete",
+    },
+
+    trainBackend: {
+      path: "/../ml/:backendID/train",
+      method: "post",
+    },
+
     /** users list */
     users: "/../users",
 

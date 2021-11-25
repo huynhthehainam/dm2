@@ -8,5 +8,7 @@ export const SDKProvider = ({ sdk, children }) => {
 };
 
 export const useSDK = () => {
-  return React.useContext(SDKContext);
+  const context = React.useContext(SDKContext);
+
+  return context;
 };

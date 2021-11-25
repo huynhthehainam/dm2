@@ -66,11 +66,7 @@ export class APIProxy {
     this.resolveMethods(options.endpoints);
   }
 
-  call(method, {
-    params,
-    body,
-    headers,
-  }) {
+  call(method, { params, body, headers }) {
     if (this.isValidMethod(method)) {
       return this[method](params ?? {}, { body, headers });
     } else {
@@ -83,6 +79,7 @@ export class APIProxy {
    * @param {String} method
    */
   isValidMethod(method) {
+    console.log("method", method);
     return this[method] instanceof Function;
   }
 
@@ -225,7 +222,7 @@ export class APIProxy {
           // @todo better check for files maybe?
           if (contentType === "multipart/form-data") {
             // fetch will set correct header with boundaries
-            requestHeaders.delete('Content-Type');
+            requestHeaders.delete("Content-Type");
           }
         }
 
@@ -260,11 +257,11 @@ export class APIProxy {
 
           try {
             const responseData =
-               rawResponse.status !== 204
-                 ? JSON.parse(
-                   this.alwaysExpectJSON ? responseText : responseText || "{}",
-                 )
-                 : { ok: true };
+              rawResponse.status !== 204
+                ? JSON.parse(
+                  this.alwaysExpectJSON ? responseText : responseText || "{}",
+                )
+                : { ok: true };
 
             if (methodSettings.convert instanceof Function) {
               return await methodSettings.convert(responseData);
@@ -281,7 +278,7 @@ export class APIProxy {
         responseResult = this.generateException(exception);
       }
 
-      Object.defineProperty(responseResult, '$meta', {
+      Object.defineProperty(responseResult, "$meta", {
         value: responseMeta,
         configurable: false,
         enumerable: false,
@@ -338,10 +335,10 @@ export class APIProxy {
     const url = new URL(gateway ? this.resolveGateway(gateway) : this.gateway);
     const usedKeys = [];
 
-    const {
-      path: resolvedPath,
-      method: resolvedMethod,
-    } = this.resolveEndpoint(endpoint, data);
+    const { path: resolvedPath, method: resolvedMethod } = this.resolveEndpoint(
+      endpoint,
+      data,
+    );
 
     const path = []
       .concat(...(parentPath ?? []), resolvedPath)
@@ -364,9 +361,7 @@ export class APIProxy {
       return result;
     });
 
-    url.pathname += processedPath
-      .replace(/\/+/g, "/")
-      .replace(/\/+$/g, "");
+    url.pathname += processedPath.replace(/\/+/g, "/").replace(/\/+$/g, "");
 
     if (data && typeof data === "object") {
       Object.entries(data).forEach(([key, value]) => {

@@ -99,3 +99,17 @@ export const absoluteURL = (path = "") => {
     ].join("/");
   }
 };
+
+export const copyText = (text: string) => {
+  const input = document.createElement('textarea');
+
+  input.style.position = "fixed"; // don't mess up with scroll
+  document.body.appendChild(input);
+
+  input.value = text;
+  input.focus();
+  input.select();
+
+  document.execCommand('copy');
+  input.remove();
+};

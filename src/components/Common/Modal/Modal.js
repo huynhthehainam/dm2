@@ -1,9 +1,11 @@
+import { Provider } from "mobx-react";
 import React, { createRef } from "react";
 import { render } from "react-dom";
 import { cn } from "../../../utils/bem";
 import { Button } from "../Button/Button";
 import { Space } from "../Space/Space";
 import { Modal } from "./ModalPopup";
+import { SDKProvider } from "../../../providers/SDKProvider";
 
 const standaloneModal = (props) => {
   const modalRef = createRef();
@@ -14,17 +16,22 @@ const standaloneModal = (props) => {
   document.body.appendChild(rootDiv);
 
   const renderModal = (props, animate) => {
-    render((
-      <Modal
-        ref={modalRef}
-        {...props}
-        onHide={() => {
-          props.onHidden?.();
-          rootDiv.remove();
-        }}
-        animateAppearance={animate}
-      />
-    ), rootDiv);
+    render(
+      <Provider>
+        <SDKProvider sdk={props.sdk}>
+          <Modal
+            ref={modalRef}
+            {...props}
+            onHide={() => {
+              props.onHidden?.();
+              rootDiv.remove();
+            }}
+            animateAppearance={animate}
+          />
+        </SDKProvider>
+      </Provider>,
+      rootDiv,
+    );
   };
 
   renderModal(props, true);
@@ -39,7 +46,14 @@ const standaloneModal = (props) => {
   };
 };
 
-export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...props }) => {
+export const confirm = ({
+  okText,
+  onOk,
+  cancelText,
+  onCancel,
+  buttonLook,
+  ...props
+}) => {
   const modal = standaloneModal({
     ...props,
     allowClose: false,
@@ -62,7 +76,7 @@ export const confirm = ({ okText, onOk, cancelText, onCancel, buttonLook, ...pro
             modal.close();
           }}
           size="compact"
-          look={buttonLook ?? 'primary'}
+          look={buttonLook ?? "primary"}
         >
           {okText ?? "OK"}
         </Button>

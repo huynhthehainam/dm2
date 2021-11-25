@@ -1,5 +1,5 @@
 import { inject, observer } from "mobx-react";
-import React, { useCallback } from "react";
+import React from "react";
 import { LSPlus } from "../../assets/icons";
 import { Block, Elem } from "../../utils/bem";
 import { Interface } from "../Common/Interface";
@@ -10,7 +10,7 @@ import { FiltersSidebar } from "../Filters/FiltersSidebar/FilterSidebar";
 import { DataView } from "../Table/Table";
 import "./DataManager.styl";
 import { Toolbar } from "./Toolbar/Toolbar";
-import { MachineLearningSettings } from "../ML/Manager/MachineLearningSettings";
+import { MachineLearningSettings } from "../MachineLearningSettings/MachineLearningSettings";
 
 const injector = inject(({ store }) => {
   const { sidebarEnabled, sidebarVisible } = store.viewsStore ?? {};
@@ -132,7 +132,6 @@ export const DataManager = injector(({ viewMode, shrinkWidth }) => {
   //   },
   //   [viewMode],
   // );
-  console.log(useCallback);
   return (
     <Block name="tabs-content">
       <Elem name="tab" mod={{ shrink: shrinkWidth }}>
