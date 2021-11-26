@@ -80,7 +80,7 @@ export const TabStore = types
     columnsTargetMap: types.map(types.array(TabColumn)),
     columnsRaw: types.optional(CustomJSON, []),
     sidebarVisible: restoreValue("sidebarVisible"),
-    sidebarEnabled: restoreValue("sidebarEnabled"),
+    sidebarEnabled: false,
   })
   .volatile(() => ({
     defaultHidden: null,

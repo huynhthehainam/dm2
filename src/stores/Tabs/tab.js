@@ -115,6 +115,11 @@ export const Tab = types
       return self.filters.filter((f) => f.target === self.target);
     },
 
+    get currentMLArguments() {
+      console.log("target", self.target);
+      return self.mlArguments.filter((f) => f.target === self.target);
+    },
+
     get currentOrder() {
       return self.ordering.length
         ? self.ordering.reduce((res, field) => {
@@ -351,6 +356,8 @@ export const Tab = types
 
       self.filters.push(filter);
 
+      console.log("args", self.mlArguments);
+
       if (filter.isValidFilter) self.save();
     },
 
@@ -361,9 +368,9 @@ export const Tab = types
         view: self.id,
       });
 
-      self.mlArguments.push(filter);
+      console.log("args", self.mlArguments);
 
-      self.save();
+      self.mlArguments.push(filter);
     },
 
     toggleColumn(column) {
