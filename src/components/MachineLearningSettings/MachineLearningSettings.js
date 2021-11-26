@@ -4,7 +4,7 @@ import { Divider } from "../Common/Divider/Divider";
 import { ErrorWrapper } from "../Common/Error/Error";
 import { InlineError } from "../Common/Error/InlineError";
 import "./MachineLearningSettings.styl";
-import { Form } from "../Common/Form/index";
+import { Form } from "../Common/Form";
 import {
   Input,
   Label,
@@ -12,10 +12,14 @@ import {
   TextArea,
   Toggle
 } from "../Common/Form/Elements";
+import { Description } from "../Common/Description/Description";
 import { useCallback, useEffect, useState } from "react";
 import { modal } from "../Common/Modal/Modal";
 import { shallowEqualObjects } from "shallow-equal";
 import { MachineLearningList } from "./MachineLearningList";
+import { Card } from "../Common/Card/Card";
+import { MLArgumentPane } from "../Common/MLArgumentPane";
+import { FiltersPane } from "../Common/FiltersPane";
 
 const { inject } = require("mobx-react");
 
@@ -50,18 +54,16 @@ export const MachineLearningSettings = injector(() => {
   const fetchBackends = useCallback(async () => {
     const models = await api.fetchBackends();
 
-    console.log("models", models);
-    if (models) setBackends(models);
+    if (models) {
+      setBackends(models);
+    }
   });
 
   useEffect(async () => {
     let isMounted = true;
 
     if (isMounted) {
-      const models = await api.fetchBackends();
-
-      console.log("models", models);
-      if (models) setBackends(models);
+      fetchBackends();
     }
     return () => {
       isMounted = false;
@@ -80,8 +82,6 @@ export const MachineLearningSettings = injector(() => {
           label: key + " (" + value + " predictions)",
         });
       }
-      console.log("versions: ", versions);
-
       setVersions(versions);
     }
     return () => {
@@ -93,17 +93,7 @@ export const MachineLearningSettings = injector(() => {
     let isMounted = true;
 
     if (isMounted) {
-      const response = await api.fetchProject();
-      const projectData = {
-        evaluate_predictions_automatically:
-          response.evaluate_predictions_automatically,
-        show_collab_predictions: response.show_collab_predictions,
-        start_training_on_annotation_update:
-          response.start_training_on_annotation_update,
-        id: response.id,
-      };
-
-      setProject(projectData);
+      fetchProject();
     }
     return () => {
       isMounted = false;
@@ -124,7 +114,7 @@ export const MachineLearningSettings = injector(() => {
         body: (
           <Form
             action={action}
-            formData={{ ...(backend ?? { }) }}
+            formData={{ ...(backend ?? {}) }}
             params={{ pk: backend?.id }}
             onSubmit={async (response) => {
               if (!response.error_message) {
@@ -204,9 +194,12 @@ export const MachineLearningSettings = injector(() => {
       start_training_on_annotation_update:
         response.start_training_on_annotation_update,
       id: response.id,
+      ml_params: response.ml_params,
+      batch_size: response.ml_params.batch_size,
+      learning_rate: response.ml_params.learning_rate,
     };
 
-    console.log("project", project);
+    console.log("project", projectInfo);
 
     if (shallowEqualObjects(projectInfo, project) === false) {
       setProject(projectInfo);
@@ -214,9 +207,13 @@ export const MachineLearningSettings = injector(() => {
     return projectInfo;
   });
 
+  console.log(MLArgumentPane, FiltersPane);
+
   return (
-    <>
-      
+    <Card header="Machine learning" style={{ maxWidth: 700, marginLeft: 50 }}>
+      <Description style={{ marginTop: 0, maxWidth: 680 }}>
+        Add one or more machine learning models to predict labels for your data.
+      </Description>
       <Button
         onClick={() => showMLFormModal()}
         style={{ height: "40px", fontSize: "16px", maxWidth: "110px" }}
@@ -232,6 +229,8 @@ export const MachineLearningSettings = injector(() => {
         onSubmit={() => fetchProject()}
         autosubmit
       >
+        <Input type="hidden" name="id" />
+
         <Form.Row columnCount={1}>
           <Label text="ML-Assisted Labeling" large />
 
@@ -256,6 +255,7 @@ export const MachineLearningSettings = injector(() => {
             />
           </div>
         </Form.Row>
+        <Divider height={32} />
 
         {versions.length > 1 && (
           <Form.Row columnCount={1}>
@@ -288,11 +288,44 @@ export const MachineLearningSettings = injector(() => {
           </Form.Row>
         )}
       </Form>
+      <Form
+        action="updateProject"
+        formData={{ ...project }}
+        // params={{ pk: project.id }}
+        onSubmit={() => fetchProject()}
+      >
+        <Label text="Hyper-parameters" large />
+
+        <Form.Row columnCount={2}>
+          <Input
+            name="batch_size"
+            label="Batch size"
+            placeholder="Batch size"
+            required
+          />
+          <Input
+            name="learning_rate"
+            label="Learning rate"
+            placeholder="Learning rate"
+            required
+          />
+        </Form.Row>
+        <Form.Actions>
+          <Button type="submit" look="primary" onClick={() => {}}>
+            Save
+          </Button>
+        </Form.Actions>
+      </Form>
+
+      <MLArgumentPane />
+      <Divider height={32} />
+      <FiltersPane />
+
       <MachineLearningList
         onEdit={(backend) => showMLFormModal(backend)}
         fetchBackends={fetchBackends}
         backends={backends}
       />
-    </>
+    </Card>
   );
 });

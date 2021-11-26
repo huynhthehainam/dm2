@@ -49,7 +49,6 @@ export default class Form extends Component {
 
   /**@type {import("../../../utils/api-proxy").APIProxy;} */
   get api() {
-    console.log("context", this.context);
     return this.context.api;
   }
 

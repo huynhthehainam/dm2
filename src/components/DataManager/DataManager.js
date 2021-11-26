@@ -124,14 +124,7 @@ const DataModeToggle = injector(
 );
 
 export const DataManager = injector(({ viewMode, shrinkWidth }) => {
-  // console.log(Toolbar);
-  // const content = viewMode === "data" ? <DataView /> : <MLManager />;
-  // const renderContent = useCallback(
-  //   (content) => {
-  //     return content;
-  //   },
-  //   [viewMode],
-  // );
+  
   return (
     <Block name="tabs-content">
       <Elem name="tab" mod={{ shrink: shrinkWidth }}>

@@ -349,6 +349,9 @@ export class APIProxy {
     const processedPath = path.replace(/:([^/]+)/g, (...res) => {
       const keyRaw = res[1];
       const [key, optional] = keyRaw.match(/([^?]+)(\??)/).slice(1, 3);
+
+      console.log("key", key);
+      console.log("data", data);
       const result = data[key];
 
       usedKeys.push(key);

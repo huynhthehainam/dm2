@@ -33,6 +33,8 @@ export const Tab = types
       "tasks",
     ),
 
+    mlArguments: types.array(types.late(() => TabFilter)),
+
     filters: types.array(types.late(() => TabFilter)),
     conjunction: types.optional(types.enumeration(["and", "or"]), "and"),
     hiddenColumns: types.maybeNull(types.optional(TabHiddenColumns, {})),
@@ -350,6 +352,18 @@ export const Tab = types
       self.filters.push(filter);
 
       if (filter.isValidFilter) self.save();
+    },
+
+    createMLArgument() {
+      const filterType = self.availableFilters[0];
+      const filter = TabFilter.create({
+        filter: filterType,
+        view: self.id,
+      });
+
+      self.mlArguments.push(filter);
+
+      self.save();
     },
 
     toggleColumn(column) {
