@@ -63,7 +63,7 @@ export const MachineLearningSettings = injector(() => {
     let isMounted = true;
 
     if (isMounted) {
-      fetchBackends();
+      await fetchBackends();
     }
     return () => {
       isMounted = false;
@@ -93,7 +93,7 @@ export const MachineLearningSettings = injector(() => {
     let isMounted = true;
 
     if (isMounted) {
-      fetchProject();
+      await fetchProject();
     }
     return () => {
       isMounted = false;

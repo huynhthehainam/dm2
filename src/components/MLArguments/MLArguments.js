@@ -4,7 +4,7 @@ import { MLArgumentLine } from "./MLArgumentLine/MLArgumentLine";
 import { Button } from "../Common/Button/Button";
 import { FaPlus } from "react-icons/fa";
 import { FilterLine } from "../Filters/FilterLine/FilterLine";
-import React from "react";
+import React, { useCallback, useState } from "react";
 
 import "./MLArguments.styl";
 import { cn } from "../../utils/bem";
@@ -18,60 +18,61 @@ const injector = inject(({ store }) => ({
   mlArguments: store.currentView?.currentMLArguments ?? [],
 }));
 
-export const MLArguments = injector(({ views, currentView, mlArguments }) => {
-  console.log(MLArgumentLine);
-  const { sidebarEnabled } = views;
+export const MLArguments = injector(({ views, currentView }) => {
+  console.log(MLArgumentLine, views, Block, Button, FaPlus, useCallback);
 
-  const fields = React.useMemo(
-    () =>
-      currentView.availableFilters.reduce((res, filter) => {
-        const target = filter.field.target;
-        const groupTitle = target
-          .split("_")
-          .map((s) =>
-            s
-              .split("")
-              .map((c, i) => (i === 0 ? c.toUpperCase() : c))
-              .join(""),
-          )
-          .join(" ");
+  var [mlArguments, setMLArguments] = useState([
+    {
+      id: 1,
+      currentValue: "hello",
+      operator: "add",
+      field: "word",
+    },
+    {
+      id: 1,
+      currentValue: "hello",
+      operator: "add",
+      field: "word",
+    },
+  ]);
+  const availableOperators = ["add", "data"];
 
-        const group = res[target] ?? {
-          id: target,
-          title: groupTitle,
-          options: [],
-        };
+  const createMLArgument = useCallback(() => {
+    const newMLArguments = [...mlArguments];
 
-        group.options.push({
-          value: filter.id,
-          title: filter.field.title,
-          original: filter,
-        });
+    newMLArguments.push({
+      id: 1,
+      currentValue: "hello",
+      operator: "add",
+      field: "word",
+    });
+    setMLArguments(newMLArguments);
+  }, [mlArguments]);
 
-        return { ...res, [target]: group };
-      }, {}),
-    [currentView.availableFilters],
-  );
+  const updateMLArguments = useCallback((index, data) => {
+    console.log("index", index);
+    console.log("data", data);
+  });
 
-  console.log(fields, FilterLine, cn);
+  console.log(FilterLine, cn);
   console.log("arg2", mlArguments);
 
   return (
-    <Block name="arguments" mod={{ sidebar: sidebarEnabled }}>
-      <Elem name="list" mod={{ withFilters: !!mlArguments.length }}>
+    <Block name="arguments" mod={{ sidebar: false }}>
+      <Elem name="list" mod={{ withFilters: false }}>
         {mlArguments.length ? (
-          mlArguments.map((filter, i) => (
-            // <FilterLine
-            //   index={i}
-            //   filter={filter}
-            //   view={currentView}
-            //   sidebar={sidebarEnabled}
-            //   value={filter.currentValue}
-            //   key={`${filter.filter.id}-${i}`}
-            //   availableFilters={Object.values(fields)}
-            //   dropdownClassName={cn("filters").elem("selector")}
-            // />
-            <h1 key={`${filter} ${i}`}>hsfasf</h1>
+          mlArguments.map((mlArgument, i) => (
+            <MLArgumentLine
+              index={i}
+              mlArgument={mlArgument}
+              view={currentView}
+              sidebar={false}
+              value={mlArgument.currentValue}
+              key={`-${i}`}
+              availableOptions={availableOperators}
+              dropdownClassName={cn("filters").elem("selector")}
+              onDataChanged={updateMLArguments}
+            />
           ))
         ) : (
           <Elem name="empty">No filters applied</Elem>
@@ -81,10 +82,10 @@ export const MLArguments = injector(({ views, currentView, mlArguments }) => {
         <Button
           type="primary"
           size="small"
-          onClick={() => currentView.createMLArgument()}
+          onClick={() => createMLArgument()}
           icon={<FaPlus />}
         >
-          Add {mlArguments.length ? "Another Filter" : "Filter"}
+          Add {mlArguments.length ? "Another Argument" : "Argument"}
         </Button>
       </Elem>
     </Block>

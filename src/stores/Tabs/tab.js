@@ -33,8 +33,6 @@ export const Tab = types
       "tasks",
     ),
 
-    mlArguments: types.array(types.late(() => TabFilter)),
-
     filters: types.array(types.late(() => TabFilter)),
     conjunction: types.optional(types.enumeration(["and", "or"]), "and"),
     hiddenColumns: types.maybeNull(types.optional(TabHiddenColumns, {})),
@@ -113,11 +111,6 @@ export const Tab = types
 
     get currentFilters() {
       return self.filters.filter((f) => f.target === self.target);
-    },
-
-    get currentMLArguments() {
-      console.log("target", self.target);
-      return self.mlArguments.filter((f) => f.target === self.target);
     },
 
     get currentOrder() {
@@ -356,21 +349,9 @@ export const Tab = types
 
       self.filters.push(filter);
 
-      console.log("args", self.mlArguments);
+      console.log("filter", filter);
 
-      if (filter.isValidFilter) self.save();
-    },
-
-    createMLArgument() {
-      const filterType = self.availableFilters[0];
-      const filter = TabFilter.create({
-        filter: filterType,
-        view: self.id,
-      });
-
-      console.log("args", self.mlArguments);
-
-      self.mlArguments.push(filter);
+      // if (filter.isValidFilter) self.save();
     },
 
     toggleColumn(column) {
