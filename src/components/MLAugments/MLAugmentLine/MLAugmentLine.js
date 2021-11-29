@@ -4,10 +4,9 @@ import { FaTrash } from "react-icons/fa";
 import { BemWithSpecifiContext } from "../../../utils/bem";
 import { Button } from "../../Common/Button/Button";
 import { Icon } from "../../Common/Icon/Icon";
-import { Tag } from "../../Common/Tag/Tag";
-import "./MLArgumentLine.styl";
+import "./MLAugmentLine.styl";
 import { TextArea } from "../../Common/Form";
-import { MLArgumentDropdown } from "../MLArgumentDropdown";
+import { MLAugmentDropdown } from "../MLAugmentDropdown";
 
 const { Block, Elem } = BemWithSpecifiContext();
 
@@ -15,50 +14,58 @@ const GroupWrapper = ({ children, wrap = false }) => {
   return wrap ? <Elem name="group">{children}</Elem> : children;
 };
 
-export const MLArgumentLine = observer(
+export const MLAugmentLine = observer(
   ({
-    mlArgument,
+    mlAugment,
     availableOptions,
     index,
-    view,
     sidebar,
-    dropdownClassName,
     onDataChanged,
+    onDataDeleted,
   }) => {
-    console.log(
-      Tag,
-      availableOptions,
-      dropdownClassName,
-      index,
-      view,
-      onDataChanged,
-    );
-    console.log("argument", mlArgument);
+    const options = [];
+
+    for (var option of availableOptions) {
+      options.push(option.name || "");
+    }
+
     return (
-      <Block name="ml-argument-line" tag={Fragment}>
+      <Block name="ml-augment-line" tag={Fragment}>
         <Elem>
           <GroupWrapper wrap={sidebar}>
             <Elem name="column" mix="conjunction">
-              <span style={{ fontSize: 12, paddingRight: 5 }}>Argument</span>
+              <span style={{ fontSize: 12, paddingRight: 5 }}>Augment</span>
             </Elem>
-            <Elem name="column" mix="field"></Elem>
           </GroupWrapper>
           <GroupWrapper wrap={sidebar}>
             <Elem name="column" mix="operation">
-              <MLArgumentDropdown
+              <MLAugmentDropdown
                 placeholder="Condition"
-                value={mlArgument.operator}
+                value={mlAugment.name}
                 disabled={false}
-                items={availableOptions}
+                items={options}
                 onChange={(e) => {
-                  onDataChanged(index, { type: e });
+                  onDataChanged(index, { name: e });
                 }}
               />
             </Elem>
             <Elem name="column" mix="value">
               <TextArea
+                required
+                value={mlAugment.paramsString}
+                onBlur={(e) => {
+                  const value = e.target.value;
+
+                  try {
+                    const params = JSON.parse(value);
+
+                    onDataChanged(index, { params });
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }}
                 onChange={(e) => {
-                  console.log("input changed", e);
+                  onDataChanged(index, { paramsString: e.target.value });
                 }}
               />
             </Elem>
@@ -68,7 +75,7 @@ export const MLArgumentLine = observer(
               type="link"
               onClick={(e) => {
                 e.stopPropagation();
-                mlArgument.delete();
+                onDataDeleted(index);
               }}
               icon={<Icon icon={FaTrash} size={12} />}
             />

@@ -145,7 +145,6 @@ export const Tab = types
           type: el.filter.currentType,
         };
 
-        console.log({ filterItem });
 
         filterItem.value = normalizeFilterValue(
           filterItem.type,
@@ -349,9 +348,8 @@ export const Tab = types
 
       self.filters.push(filter);
 
-      console.log("filter", filter);
 
-      // if (filter.isValidFilter) self.save();
+      if (filter.isValidFilter) self.save();
     },
 
     toggleColumn(column) {

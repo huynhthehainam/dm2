@@ -4,9 +4,8 @@ import { Dropdown } from "./Dropdown/DropdownComponent";
 import React from "react";
 import { Button } from "./Button/Button";
 import { Badge } from "./Badge/Badge";
-import { MLArguments } from "../MLArguments/MLArguments";
+import { MLAugments } from "../MLAugments/MLAugments";
 import { FaAngleDown } from "react-icons/fa";
-import { Filters } from "../Filters/Filters";
 
 const injector = inject(({ store }) => {
   const currentView = store.currentView;
@@ -16,15 +15,13 @@ const injector = inject(({ store }) => {
   };
 });
 
-export const MLArgumentButton = injector(
+export const MLAugmentButton = injector(
   observer(
     React.forwardRef(
       (
         { activeFiltersNumber, size, sidebarEnabled, viewsStore, ...rest },
         ref,
       ) => {
-        console.log(activeFiltersNumber);
-        console.log(rest);
         activeFiltersNumber = 12;
         const hasFilters = activeFiltersNumber > 0;
 
@@ -35,7 +32,7 @@ export const MLArgumentButton = injector(
             onClick={() => sidebarEnabled && viewsStore.toggleSidebar()}
             {...rest}
           >
-            Arguments{" "}
+            Augments{" "}
             {hasFilters && (
               <Badge size="small" style={{ marginLeft: 5 }}>
                 {activeFiltersNumber}
@@ -49,13 +46,10 @@ export const MLArgumentButton = injector(
   ),
 );
 
-export const MLArgumentPane = injector(
-  observer(({ view, size, ...rest }) => {
-    console.log(view);
+export const MLAugmentPane = injector(
+  observer(({ size, augments, ...rest }) => {
     const dropdown = useRef();
     const sidebarEnabled = true;
-
-    console.log(MLArguments, Filters);
 
     useEffect(() => {
       if (sidebarEnabled === true) {
@@ -63,9 +57,13 @@ export const MLArgumentPane = injector(
       }
     }, [sidebarEnabled]);
 
+    console.log("pane augment", augments);
     return (
-      <Dropdown.Trigger ref={dropdown} content={<MLArguments />}>
-        <MLArgumentButton {...rest} size={size} />
+      <Dropdown.Trigger
+        ref={dropdown}
+        content={<MLAugments augments={augments} />}
+      >
+        <MLAugmentButton {...rest} size={size} />
       </Dropdown.Trigger>
     );
   }),

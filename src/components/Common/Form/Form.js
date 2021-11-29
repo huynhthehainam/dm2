@@ -251,7 +251,6 @@ export default class Form extends Component {
 
     const rawAction = this.formElement.current.getAttribute("action");
 
-    console.log("api", this.api);
 
     const useApi = this.api.isValidMethod(rawAction);
 

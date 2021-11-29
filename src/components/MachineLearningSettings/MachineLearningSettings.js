@@ -18,8 +18,7 @@ import { modal } from "../Common/Modal/Modal";
 import { shallowEqualObjects } from "shallow-equal";
 import { MachineLearningList } from "./MachineLearningList";
 import { Card } from "../Common/Card/Card";
-import { MLArgumentPane } from "../Common/MLArgumentPane";
-import { FiltersPane } from "../Common/FiltersPane";
+import { MLAugmentPane } from "../Common/MLAugmentPane";
 
 const { inject } = require("mobx-react");
 
@@ -37,10 +36,14 @@ export const MachineLearningSettings = injector(() => {
     evaluate_predictions_automatically: false,
     show_collab_predictions: false,
     start_training_on_annotation_update: false,
+    id: 0,
+    ml_params: {},
+    batch_size: 0,
+    learning_rate: 0,
+    ml_augments: [],
   });
   const [versions, setVersions] = useState([]);
   const [backends, setBackends] = useState([]);
-  const [mlError, setMLError] = useState();
 
   const resetMLVersion = useCallback(async (e) => {
     e.preventDefault();
@@ -102,10 +105,8 @@ export const MachineLearningSettings = injector(() => {
 
   const showMLFormModal = useCallback(
     (backend) => {
-      console.log(mlError);
       const action = backend ? "updateMLBackend" : "addMLBackend";
 
-      console.log({ backend });
       const modalProps = {
         title: `${backend ? "Edit" : "Add"} model`,
         style: { width: 760 },
@@ -146,11 +147,7 @@ export const MachineLearningSettings = injector(() => {
             </Form.Row>
 
             <Form.Actions>
-              <Button
-                type="submit"
-                look="primary"
-                onClick={() => setMLError(null)}
-              >
+              <Button type="submit" look="primary">
                 Validate and Save
               </Button>
             </Form.Actions>
@@ -197,6 +194,7 @@ export const MachineLearningSettings = injector(() => {
       ml_params: response.ml_params,
       batch_size: response.ml_params.batch_size,
       learning_rate: response.ml_params.learning_rate,
+      ml_augments: response.ml_augments,
     };
 
     console.log("project", projectInfo);
@@ -207,7 +205,7 @@ export const MachineLearningSettings = injector(() => {
     return projectInfo;
   });
 
-  console.log(MLArgumentPane, FiltersPane);
+  console.log("assafasfas", project.ml_augments);
 
   return (
     <Card header="Machine learning" style={{ maxWidth: 700, marginLeft: 50 }}>
@@ -317,9 +315,7 @@ export const MachineLearningSettings = injector(() => {
         </Form.Actions>
       </Form>
 
-      <MLArgumentPane />
-      <Divider height={32} />
-      <FiltersPane />
+      <MLAugmentPane augments={project.ml_augments} />
 
       <MachineLearningList
         onEdit={(backend) => showMLFormModal(backend)}

@@ -45,7 +45,7 @@ const renderOptions = (OptionRender) => (item) => {
   );
 };
 
-export const MLArgumentDropdown = observer(
+export const MLAugmentDropdown = observer(
   ({
     placeholder,
     defaultValue,
@@ -59,7 +59,6 @@ export const MLArgumentDropdown = observer(
     dropdownClassName,
     outputFormat,
   }) => {
-    console.log("items", items);
     return (
       <Select
         multiple={multiple}
