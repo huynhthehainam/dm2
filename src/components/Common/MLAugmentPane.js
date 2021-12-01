@@ -57,7 +57,6 @@ export const MLAugmentPane = injector(
       }
     }, [sidebarEnabled]);
 
-    console.log("pane augment", augments);
     return (
       <Dropdown.Trigger
         ref={dropdown}

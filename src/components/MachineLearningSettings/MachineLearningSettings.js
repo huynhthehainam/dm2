@@ -205,7 +205,6 @@ export const MachineLearningSettings = injector(() => {
     return projectInfo;
   });
 
-  console.log("assafasfas", project.ml_augments);
 
   return (
     <Card header="Machine learning" style={{ maxWidth: 700, marginLeft: 50 }}>

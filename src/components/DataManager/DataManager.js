@@ -105,6 +105,7 @@ const TabsSwitch = switchInjector(
 );
 
 import { RadioGroup } from "../Common/RadioGroup/RadioGroup";
+import { TestTaskView } from "../App/TestTaskView/TestTaskView";
 
 const DataModeToggle = injector(
   observer(({ view, size }) => {
@@ -118,13 +119,19 @@ const DataModeToggle = injector(
       >
         <RadioGroup.Button value="data">Data</RadioGroup.Button>
         <RadioGroup.Button value="ml"> Machine Learning </RadioGroup.Button>
+        <RadioGroup.Button value="testTask"> Test </RadioGroup.Button>
       </RadioGroup>
     );
   }),
 );
 
 export const DataManager = injector(({ viewMode, shrinkWidth }) => {
-  
+  const views = {
+    data: <DataView />,
+    ml: <MachineLearningSettings />,
+    testTask: <TestTaskView />,
+  };
+
   return (
     <Block name="tabs-content">
       <Elem name="tab" mod={{ shrink: shrinkWidth }}>
@@ -138,7 +145,7 @@ export const DataManager = injector(({ viewMode, shrinkWidth }) => {
           </Interface>
         ) : null}
 
-        {viewMode === "data" ? <DataView /> : <MachineLearningSettings />}
+        {views[viewMode]}
       </Elem>
       <FiltersSidebar />
     </Block>

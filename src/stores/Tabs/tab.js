@@ -26,7 +26,7 @@ export const Tab = types
 
     type: types.optional(types.enumeration(["list", "grid"]), "list"),
 
-    mode: types.optional(types.enumeration(["data", "ml"]), "data"),
+    mode: types.optional(types.enumeration(["data", "ml", "testTask"]), "data"),
 
     target: types.optional(
       types.enumeration(["tasks", "annotations"]),
@@ -144,7 +144,6 @@ export const Tab = types
           ...getSnapshot(el),
           type: el.filter.currentType,
         };
-
 
         filterItem.value = normalizeFilterValue(
           filterItem.type,
@@ -347,7 +346,6 @@ export const Tab = types
       });
 
       self.filters.push(filter);
-
 
       if (filter.isValidFilter) self.save();
     },
